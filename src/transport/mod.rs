@@ -1,15 +1,16 @@
 pub mod errors;
 pub mod local_transport;
 
-use tokio::sync::mpsc::{Receiver, Sender};
+#[cfg(test)]
+mod tests;
 
 use errors::TransportError;
-use crate::{message::RpcMessage, node::NodeId};
+use crate::{message::MessageEnvelope, node::NodeId};
 
-type TransportResult = Result<RpcMessage, TransportError>;
+type TransportResult = Result<MessageEnvelope, TransportError>;
 
 pub trait Transport {
-    fn setup_node(&mut self, node_id: NodeId) -> (Sender<RpcMessage>, Receiver<RpcMessage>);
-    async fn send(&self, node_id: NodeId, message: RpcMessage) -> Result<(), errors::TransportError>;
-    async fn receive(&self, rpc_rx: &mut Receiver<RpcMessage>) -> TransportResult;
+    fn setup_node(&mut self, node_id: NodeId);
+    async fn send(&self, message: MessageEnvelope) -> Result<(), errors::TransportError>;
+    async fn receive(&self, node_id: NodeId) -> TransportResult;
 }

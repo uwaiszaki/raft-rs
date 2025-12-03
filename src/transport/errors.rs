@@ -1,15 +1,15 @@
 use thiserror::Error;
 use tokio::sync::mpsc;
 
-use crate::message::RpcMessage;
+use crate::{message::MessageEnvelope, node::NodeId};
 
 #[derive(Error, Debug)]
 pub enum TransportError {
     #[error("Failed to send message")]
-    SendError(#[from] mpsc::error::SendError<RpcMessage>),
+    SendError(#[from] mpsc::error::SendError<MessageEnvelope>),
     #[error("Failed to receive message")]
     ReceiveError,
 
     #[error("Node {0} not found")]
-    NodeNotFound(u64),
+    NodeNotFound(NodeId),
 }

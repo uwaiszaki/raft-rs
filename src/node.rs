@@ -1,4 +1,5 @@
 use std::io::Cursor;
+use std::fmt;
 
 // The Node definition of raft
 use bytes::{Buf, BufMut, Bytes, BytesMut};
@@ -9,7 +10,20 @@ use crate::state::NodeState;
 use crate::config::Config;
 use crate::transport::Transport;
 
-pub type NodeId = u16;
+
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Hash, Clone, Copy)]
+pub struct NodeId(pub u16);
+impl From<u16> for NodeId {
+    fn from(value: u16) -> Self {
+        NodeId(value)
+    }
+}
+
+impl fmt::Display for NodeId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
 
 // pub struct RaftNode<S, SM, T>
 // where
@@ -117,7 +131,7 @@ pub type NodeId = u16;
 //    c) Followers commit log entries to their own logs
 
 
-
+#[derive(Debug)]
 pub struct LogEntry {
     pub term: u64,
     pub index: u64,
