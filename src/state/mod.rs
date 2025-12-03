@@ -2,9 +2,9 @@ mod follower;
 mod leader;
 mod candidate;
 
-use leader::Leader;
-use follower::Follower;
-use candidate::Candidate;
+pub use leader::Leader;
+pub use follower::Follower;
+pub use candidate::Candidate;
 
 pub enum NodeState {
     Leader(Leader),
