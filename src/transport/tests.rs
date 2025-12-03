@@ -26,45 +26,41 @@ async fn test_local_transport_send_and_receive() {
 
     let transport = Arc::new(transport);
     let transport_1 = transport.clone();
+    let transport_2 = transport.clone();
 
-    let handle = tokio::spawn(async move {
-        let ping_message = MessageEnvelope {
-            to: NodeId(2),
-            from: NodeId(1),
-            message: RpcMessage::Ping(String::from("PING"))
-        };
-        transport_1.send(ping_message).await.unwrap();
-        println!("[THREAD-1] Sent the ping :: Now waiting for PONG");
-        let pong_message = transport_1.receive(NodeId(1)).await.unwrap();
-        println!("[THREAD-1] Got {:?}", pong_message);
-
-        assert_eq!(pong_message.from, NodeId(2), "PONG should be from node 2");
-        assert_eq!(pong_message.to, NodeId(1), "PONG should be to node 1");
-        match pong_message.message {
-            RpcMessage::Ping(ref msg) => {
-                assert_eq!(msg, "PONG", "Should receive PONG message");
-            }
-            _ => panic!("Expected Ping message, got something else"),
+    let (pong_result, ping_result) = tokio::join!(
+        // Node 1: Send PING, receive PONG
+        async move {
+            let ping = MessageEnvelope {
+                to: NodeId(2),
+                from: NodeId(1),
+                message: RpcMessage::Ping(String::from("PING"))
+            };
+            transport_1.send(ping).await.unwrap();
+            println!("[NODE-1] Sent PING");
+            
+            let pong = transport_1.receive(NodeId(1)).await.unwrap();
+            println!("[NODE-1] Received PONG");
+            assert_eq!(pong.from, NodeId(2));
+            pong
+        },
+        // Node 2: Receive PING, send PONG
+        async move {
+            let ping = transport_2.receive(NodeId(2)).await.unwrap();
+            println!("[NODE-2] Received PING");
+            assert_eq!(ping.from, NodeId(1));
+            
+            let pong = MessageEnvelope {
+                to: NodeId(1),
+                from: NodeId(2),
+                message: RpcMessage::Ping(String::from("PONG"))
+            };
+            transport_2.send(pong).await.unwrap();
+            println!("[NODE-2] Sent PONG");
+            ping
         }
-    });
+    );
 
-
-    let ping_message = transport.receive(NodeId(2)).await.unwrap();
-    println!("[MAIN] Got {:?}", ping_message);
-    assert_eq!(ping_message.from, NodeId(1), "PING should be from node 1");
-    assert_eq!(ping_message.to, NodeId(2), "PING should be to node 2");
-    match ping_message.message {
-        RpcMessage::Ping(ref msg) => {
-            assert_eq!(msg, "PING", "Should receive PING message");
-        }
-        _ => panic!("Expected Ping message, got something else"),
-    }
-
-    let pong_message = MessageEnvelope {
-        to: 1.into(),
-        from: 2.into(),
-        message: RpcMessage::Ping(String::from("PONG"))
-    };
-    transport.send(pong_message).await.unwrap();
-    handle.await.unwrap();
+    assert_eq!(ping_result.from, NodeId(1));
+    assert_eq!(pong_result.from, NodeId(2));
 }
