@@ -5,7 +5,7 @@ pub mod local_transport;
 mod tests;
 
 use errors::TransportError;
-use crate::{message::MessageEnvelope, node::NodeId};
+use crate::{message::MessageEnvelope, raft_node::NodeId};
 
 type TransportResult = Result<MessageEnvelope, TransportError>;
 

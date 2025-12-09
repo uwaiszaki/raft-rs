@@ -3,10 +3,13 @@ pub mod rocksdb;
 #[cfg(test)]
 mod rocksdb_test;
 
-use bincode::{Encode, Decode};
-use crate::node::LogEntry;
+#[cfg(test)]
+pub mod mock;
 
-#[derive(Encode, Decode)]
+use bincode::{Encode, Decode};
+use crate::raft_node::LogEntry;
+
+#[derive(Encode, Decode, Clone, Copy)]
 pub struct VotingState {
     pub current_term: u64,
     pub voted_for: Option<u64>
@@ -17,7 +20,7 @@ struct CounterState {
     last_applied_idx: u64
 }
 
-trait Storage {
+pub trait Storage {
     fn persist_voting_state(&mut self, state: &VotingState);
     fn load_voting_state(&self) -> VotingState;
 

@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::node::{NodeId};
+use crate::raft_node::{NodeId};
 
 pub struct Leader {
     pub next_index: HashMap<NodeId, u64>,

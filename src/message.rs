@@ -1,4 +1,4 @@
-use crate::node::{NodeId, LogEntry};
+use crate::raft_node::{NodeId, LogEntry};
 
 #[derive(Debug)]
 pub struct MessageEnvelope {
@@ -30,6 +30,10 @@ pub struct AppendEntriesRequest {
 pub struct AppendEntriesResponse {
     pub term: u64,
     pub success: bool,
+    pub match_index: u64,
+    // TODO: For conflict resolution
+    pub conflict_index: Option<u64>,
+    pub conflict_term: Option<u64>,
 }
 
 #[derive(Debug)]

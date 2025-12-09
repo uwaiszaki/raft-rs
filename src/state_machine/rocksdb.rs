@@ -1,6 +1,6 @@
 use rocksdb::{DB, Options};
 
-use crate::node::NodeId;
+use crate::raft_node::NodeId;
 use super::{StateMachine, errors::Error};
 
 pub struct RocksDb {

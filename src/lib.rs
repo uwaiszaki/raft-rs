@@ -1,4 +1,4 @@
-mod node;
+mod raft_node;
 mod state;
 mod transport;
 mod config;

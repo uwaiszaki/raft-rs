@@ -6,12 +6,14 @@ use tokio::sync::{
 use std::sync::Arc;
 
 use crate::message::MessageEnvelope;
-use crate::node::NodeId;
+use crate::raft_node::NodeId;
 use crate::transport::errors::TransportError;
 use crate::transport::Transport;
 
 pub struct NodeInfo {
     pub rpc_tx: Sender<MessageEnvelope>,
+
+    // Used Arc Mutex here to use interior mutability
     pub rpc_rx: Arc<Mutex<Receiver<MessageEnvelope>>>
 }
 

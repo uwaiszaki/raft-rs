@@ -1,4 +1,4 @@
-use chrono::Duration;
+use tokio::time::Duration;
 
 pub struct Config {
     pub election_timeout: Duration,
@@ -16,8 +16,8 @@ impl Config {
 
     pub fn default() -> Self {
         Self {
-            election_timeout: Duration::milliseconds(1000),
-            heartbeat_interval: Duration::milliseconds(500),
+            election_timeout: Duration::from_secs(1),
+            heartbeat_interval: Duration::from_millis(500),
             max_log_entries: 1000,
             allow_stale_reads: false,
         }

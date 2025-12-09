@@ -1,7 +1,7 @@
 use thiserror::Error;
 use tokio::sync::mpsc;
 
-use crate::{message::MessageEnvelope, node::NodeId};
+use crate::{message::MessageEnvelope, raft_node::NodeId};
 
 #[derive(Error, Debug)]
 pub enum TransportError {

@@ -6,7 +6,7 @@ use bytes::Bytes;
 mod tests {
 
     use crate::storage::{Storage, rocksdb::RocksDb, VotingState};
-    use crate::node::LogEntry;
+    use crate::raft_node::LogEntry;
 
     use super::*;
 

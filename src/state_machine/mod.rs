@@ -4,6 +4,9 @@ pub mod errors;
 #[cfg(test)]
 mod tests;
 
+#[cfg(test)]
+pub mod mock;
+
 use errors::Error;
 
 pub trait StateMachine {

@@ -3,7 +3,7 @@ use std::sync::Arc;
 
 use crate::{
     message::{RpcMessage, MessageEnvelope},
-    node::NodeId, transport::Transport
+    raft_node::NodeId, transport::Transport
 };
 
 use super::local_transport::LocalTransport;

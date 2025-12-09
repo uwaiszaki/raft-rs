@@ -2,7 +2,7 @@ use rocksdb::{DB, Options, WriteBatch, IteratorMode};
 use bincode::{config, encode_to_vec, decode_from_slice};
 
 use crate::storage::{Storage, VotingState};
-use crate::node::{NodeId, LogEntry};
+use crate::raft_node::{NodeId, LogEntry};
 
 
 pub struct RocksDb {
@@ -10,7 +10,7 @@ pub struct RocksDb {
 }
 
 impl RocksDb {
-    fn new(node_id: NodeId) -> Self {
+    pub fn new(node_id: NodeId) -> Self {
         let mut options = Options::default();
         options.create_if_missing(true);
         options.create_missing_column_families(true);
